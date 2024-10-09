@@ -1,6 +1,7 @@
 export class CreateTaskDto {
     title: string;
-    content: string;
-    userId: string;
-  }
+    description: string;  
+    completed: boolean;
+    userId : string
+}
   

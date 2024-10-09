@@ -12,14 +12,15 @@ export class TaskController {
   @Post()
   createTask(@Request() req , @Body() createTaskDto: CreateTaskDto) {
     const loggedInUserId = req.user._id;
-    createTaskDto.userId = loggedInUserId
+    createTaskDto.userId = loggedInUserId;
     return this.taskService.createTask(createTaskDto);
   }
 
   @Get()
   findAllTasks(@Request() req) {
     const loggedInUserId = req.user._id;
-    return this.taskService.findAllTasks(loggedInUserId);
+    const tasks =  this.taskService.findAllTasks(loggedInUserId);
+    return tasks;
   }
 
   @Get(':taskId')
@@ -30,7 +31,7 @@ export class TaskController {
 
   @Put(':taskId')
   async updateTask(@Param('taskId') taskId: string, @Body() createTaskDto: CreateTaskDto, @Request() req ) {
-    const loggedInUserId = req.user.id;
+    const loggedInUserId = req.user._id;
     const updatedTask = await this.taskService.updateTask(taskId, createTaskDto, loggedInUserId);
     return updatedTask;
   }

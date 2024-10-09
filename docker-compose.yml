@@ -1,0 +1,24 @@
+services:
+  backend:
+    build:
+      context: ./project-backend
+    ports:
+      - "3000:3000"
+    depends_on:
+      - mongo
+
+  frontend:
+    build:
+      context: ./project-frontend
+    ports:
+      - "5173:5173"
+
+  mongo:
+    image: mongo:latest
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+
+volumes:
+  mongo-data:

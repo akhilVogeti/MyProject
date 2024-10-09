@@ -1,4 +1,4 @@
-import { Injectable ,  ForbiddenException} from '@nestjs/common';
+import { Injectable ,  ForbiddenException, Logger} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Task } from '../schemas/task.schema';
@@ -8,13 +8,15 @@ import { CreateTaskDto } from './dto/create-task.dto';
 export class TaskService {
   constructor(@InjectModel(Task.name) private taskModel: Model<Task>) {}
 
-  createTask(taskData: CreateTaskDto): Promise<Task> {
+  async createTask(taskData: CreateTaskDto): Promise<Task> {
     const newTask = new this.taskModel(taskData);
-    return newTask.save();
+    const task = await newTask.save();
+    return task;
   }
 
-  findAllTasks(loggedInUserId: string): Promise<Task[]> {
-    return this.taskModel.find({userId: loggedInUserId}).exec();
+  async findAllTasks(loggedInUserId: string): Promise<Task[]> {
+    const tasks : Task[] = await this.taskModel.find({userId: loggedInUserId}).exec();
+    return tasks;
   }
 
   async findOneTask(id: string, loggedInUserId: string ): Promise<Task> {
@@ -33,8 +35,14 @@ export class TaskService {
 
   async updateTask(id: string, taskData: CreateTaskDto, loggedInUserId: string): Promise<Task> {
     const existingTask = await this.taskModel.findById(id).exec();
-    if(existingTask.userId === loggedInUserId) {
-        const updatedTask = await this.taskModel.findByIdAndUpdate(id, taskData, { new: true });
+    if(existingTask.userId.toString() === loggedInUserId.toString()) { //for some reason this doesnt work without toString()
+        const taskBody = {
+          title: taskData.title,
+          description: taskData.description,
+          completed: taskData.completed,
+          userId:taskData.userId
+        }
+        const updatedTask = await this.taskModel.findByIdAndUpdate(id, taskBody, { new: true });
         return updatedTask;
     }
     else{
@@ -47,7 +55,7 @@ export class TaskService {
 
   async removeTask(id: string, loggedInUserId: string): Promise<void> {
     const existingTask = await this.taskModel.findById(id).exec();
-    if(existingTask.userId === loggedInUserId) {
+    if(existingTask.userId.toString() === loggedInUserId) {
         await this.taskModel.findByIdAndDelete(id);
     }
     else {

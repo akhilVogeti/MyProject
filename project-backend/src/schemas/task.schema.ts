@@ -9,6 +9,9 @@ export class Task extends Document {
   @Prop({ required: true })
   description: string;
 
+  @Prop({ required: true})
+  completed: boolean
+
   @Prop({ required: true })
   userId: string; 
 
