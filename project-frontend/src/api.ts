@@ -26,9 +26,6 @@ export const register = (userData : Credentials) => api.post('/auth/register', u
 export const getTasks = (token : string | null) => api.get('/tasks', { headers: { Authorization: `Bearer ${token}` } });
 export const createTask = (taskData : Task, token : string) => api.post('/tasks', taskData, { headers: { Authorization: `Bearer ${token}` } });
 export const updateTask = (id : string, taskData: Task, token : string) => {
-  console.log(`in the updatetask in api.ts in frontend`);
-  console.log(`id is ${id}`);
-  console.log(`taskdata is ${JSON.stringify(taskData)}`)
   api.put(`/tasks/${id}`, taskData, { headers: { Authorization: `Bearer ${token}` } })
 };
 

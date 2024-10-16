@@ -1,7 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { User } from '../schemas/user.schema';
+import { User } from './schema/user.schema';
 import { CreateUserDto } from './dto/create-user.dto';
 
 @Injectable()
@@ -14,7 +14,7 @@ export class UserService {
   }
 
   async findByUsername(username: string): Promise<User | null> {
-    const user = await  this.userModel.findOne({ username }).exec();
+    const user = await this.userModel.findOne({ username }).exec();
     return user;
   }
 }

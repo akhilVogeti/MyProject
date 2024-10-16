@@ -9,7 +9,7 @@ import { PassportModule } from '@nestjs/passport';
 
 @Module({
   imports: [
-    MongooseModule.forRoot('mongodb://mongo:27017/sample-project'), 
+    MongooseModule.forRoot('mongodb://localhost:27017/sample-project'), 
     UsersModule, TasksModule, AuthModule, PassportModule.register({ defaultStrategy: 'jwt' })],
   controllers: [AppController],
   providers: [AppService],
