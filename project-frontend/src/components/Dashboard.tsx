@@ -1,44 +1,45 @@
 import React, { useState, useEffect } from 'react';
-import { Button,Card,Checkbox,Modal,Input,Typography,Divider} from '@mui/joy';
+import { Button, Card, Checkbox, Typography, Divider} from '@mui/joy';
 import Add from '@mui/icons-material/Add';
-import { Task, getTasks, createTask, deleteTask, updateTask } from '../api';
+import {fetchTasks, createNewTask, updateExistingTask, deleteExistingTask } from '../features/task/taskThunk'
+import { Task } from '../types'
 import { useNavigate } from 'react-router-dom';
 import { FaTrash, FaEdit } from "react-icons/fa";
 import { TaskModal } from './TaskModal';
-import {  cssStyles, muiStyles } from './styles/styles';
+import { cssStyles, muiStyles } from './styles/styles';
+import { RootState, AppDispatch } from '../app/store';
+import { useDispatch, useSelector } from 'react-redux';
+import {logout } from '../features/auth/authSlice'
+
+
 
 
 const Dashboard: React.FC = () => {
-  const [tasks, setTasks] = useState<Task[]>([]);
+  const navigate = useNavigate();
+  const dispatch = useDispatch<AppDispatch>();
+
+  const token = useSelector((state: RootState) => state.auth.token); 
+  const tasks = useSelector((state: RootState) => state.tasks.tasks);
+  
   const [newTask, setNewTask] = useState<Task | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
-  const token = localStorage.getItem('token');
-  const username = localStorage.getItem('username');
-  const navigate = useNavigate();
-  document.title='Dashboard';
+  
 
   useEffect(() => {
-    const fetchTasks = async () => {
-      if (!token) navigate('/login');
-      try {
-        
-        const response = await getTasks(token);
-        
-        setTasks(response.data);
-      } catch (error) {
-        console.error('Error fetching tasks:', error);
-      }
-    };
-    fetchTasks();
-  }, []);
+    if (!token) {
+      navigate('/login');
+    } else {
+      dispatch(fetchTasks(token)); 
+    }
+    document.title = 'Dashboard';
+  }, [token, dispatch, navigate]);
 
   const handleCheckboxChange = async (taskId: string) => {
     const taskToUpdate = tasks.find(task => task._id === taskId);
     if (taskToUpdate && token) {
       const updatedTask = { ...taskToUpdate, completed: !taskToUpdate.completed };
       try {
-        await updateTask(taskId, updatedTask, token);
-        setTasks(tasks.map(task => (task._id === taskId ? updatedTask : task)));
+        await dispatch(updateExistingTask({ taskId, updatedTask, token }));
       } catch (error) {
         console.error('Error updating task status:', error);
       }
@@ -55,17 +56,22 @@ const Dashboard: React.FC = () => {
     setModalOpen(false);
   };
 
-  const handleSaveTask = async () => {
-    if (newTask && token) {
+  const handleSaveTask = async (updatedTask : Task) => {
+
+    if (updatedTask && token) {
       try {
-       
-        if (newTask._id) {
-          await updateTask(newTask._id, newTask, token);
-          setTasks(tasks.map(task => (task._id === newTask._id ? newTask : task)));
+        if (updatedTask._id) {
+          await dispatch(updateExistingTask({
+          taskId: updatedTask._id,         
+          updatedTask,      
+          token,     
+          }));
         } else {
-          newTask.completed = false;
-          const response = await createTask(newTask, token);
-          setTasks([...tasks, response.data]);
+          updatedTask.completed = false;
+          await dispatch(createNewTask({
+            task:updatedTask, 
+            token
+          }));
         }
         closeModal();
       } catch (error) {
@@ -77,8 +83,8 @@ const Dashboard: React.FC = () => {
   const removeTask = async (taskId: string) => {
     if(token){
       try {
-        await deleteTask(taskId, token);
-        setTasks(tasks.filter(task => task._id !== taskId));
+        await dispatch(deleteExistingTask({taskId, token}))
+        
       } catch (error) {
         console.error('Error deleting task:', error);
       }
@@ -86,14 +92,14 @@ const Dashboard: React.FC = () => {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem('token'); // Clear the token
-    navigate('/'); // Redirect to home
+    dispatch(logout());
+    navigate('/'); 
   };
 
   return (
     <div >
       <div style={cssStyles.header}>
-        <Typography level="h3">Hi, {`${username}`}</Typography>
+        
         <Typography level="h1">Welcome to Task Manager</Typography>
         <Button color="danger" onClick={handleLogout}>Logout</Button>
       </div>

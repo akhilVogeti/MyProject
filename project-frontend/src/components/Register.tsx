@@ -1,26 +1,24 @@
-
-import { useNavigate } from 'react-router-dom';
+import { useEffect } from 'react';
+import { useNavigate,  } from 'react-router-dom';
 import { Input, Button, Typography, Stack, Box, Link, FormControl, FormLabel } from '@mui/joy';
-import {register} from '../api';
+import { register } from '../features/auth/authThunk';
 import { muiStyles } from './styles/styles';
+import {  SignInFormElement } from '../types';
+import { AppDispatch } from '../app/store';
+import { useDispatch } from 'react-redux';
 
 const Register: React.FC = () => {
 
-  interface FormElements extends HTMLFormControlsCollection {
-    username: HTMLInputElement;
-    password: HTMLInputElement;
-   
-  }
-
-  interface SignInFormElement extends HTMLFormElement {
-    readonly elements: FormElements;
-  }
+  useEffect(() => {
+    document.title='Register';
+  },[]);
 
  
 
   const navigate = useNavigate();
-  document.title='Register';
+  const dispatch = useDispatch<AppDispatch>();
 
+ 
   const handleFormSubmit = async(event: React.FormEvent<SignInFormElement>) => {
     event.preventDefault();
     const formElements = event.currentTarget.elements;
@@ -29,7 +27,7 @@ const Register: React.FC = () => {
       password: formElements.password.value,
     };
     try{
-      await register(userData);
+      dispatch(register(userData));
       navigate('/login');
     } catch(error) {
       console.error('Registration error:', error);

@@ -37,6 +37,7 @@ export class TaskService {
   }
 
   async updateTask(taskId: string, taskData: CreateTaskDto): Promise<Task> {
+    
     try{
       const taskBody = {
         title: taskData.title,
@@ -44,7 +45,10 @@ export class TaskService {
         completed: taskData.completed,
         userId:taskData.userId
       }
+     
       const updatedTask = await this.taskModel.findByIdAndUpdate(taskId, taskBody, { new: true });
+      
+      
       return updatedTask;
     } catch(error) {
       console.log(`error in updating the task with ID ${taskId}`, error);
@@ -55,6 +59,7 @@ export class TaskService {
   async removeTask(taskId: string): Promise<void> {
     try{
       await this.taskModel.findByIdAndDelete(taskId);
+      
     } catch(error) {
       console.log(`error in deleting the task with ID ${taskId}`, error);
     }
