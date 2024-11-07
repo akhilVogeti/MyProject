@@ -11,7 +11,7 @@ const PrivateRoute: React.FC<PrivateRouteProps> = ({ component }) => {
 
   useEffect(() => {
     if (!token) {
-      navigate('/login'); // Redirect to login if no token
+      navigate('/login'); 
     }
   }, [token, navigate]);
 

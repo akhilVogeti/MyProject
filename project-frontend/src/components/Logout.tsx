@@ -9,8 +9,7 @@ const Logout: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
 
-  const handleLogout = () => {
-    //localStorage.removeItem('token'); 
+  const handleLogout = () => { 
     dispatch(logout());
     navigate('/'); 
   };

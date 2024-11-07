@@ -15,7 +15,7 @@ export const muiStyles :{ [key: string]: SxProps } = {
         transition: '0.3s',
         '&:hover': {
             boxShadow: 6, 
-            }
+        }
     },
 
     loginPageHeader : { textAlign: 'center', marginTop:4 },

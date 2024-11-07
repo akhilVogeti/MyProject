@@ -5,7 +5,6 @@ import { Task } from '../../service/task.service';
 
 
 export const fetchTasks = createAsyncThunk('tasks/fetchTasks', async (token: string) => {
-    //const token = localStorage.getItem('token');
   try {
     const response = await getTasks(token);
     return response.data;
@@ -16,7 +15,6 @@ export const fetchTasks = createAsyncThunk('tasks/fetchTasks', async (token: str
 
 export const createNewTask = createAsyncThunk('tasks/createTask', async ({ task, token }: { task: Task; token: string }) => { 
   try {
-    console.log('in creating task thunk')
     const response = await createTask(task, token);
     return response.data;
   } catch (error: any) {
@@ -29,9 +27,9 @@ export const updateExistingTask = createAsyncThunk(
     async ({ taskId, updatedTask, token }: { taskId: string; updatedTask: Task; token: string }) => {
      
       try {
-        console.log('in updating task thunk');
+        
         const response = await updateTask(taskId, updatedTask, token);
-        return response.data; // Return the updated task data
+        return response.data; 
       } catch (error: any) {
         console.log(error);
         

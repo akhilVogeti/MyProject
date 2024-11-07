@@ -1,4 +1,4 @@
-import axios from 'axios';
+import {APIService} from './api.service';
 
 export interface Task {
   _id : string,
@@ -7,20 +7,27 @@ export interface Task {
   description: string,
 }
 
-const API_URL = 'http://localhost:3000';
+const apiService = new APIService();
 
-const api = axios.create({
-    baseURL: API_URL,
-    headers: {
-        'Content-Type': 'application/json',
-      },
-});
+export const getTasks = (token : string ) => {
+    apiService.setAuthHeaders(token);
+    return apiService.get('/tasks');
+}
 
-export const getTasks = (token : string | null) => api.get('/tasks', { headers: { Authorization: `Bearer ${token}` } });
-export const createTask = (taskData : Task, token : string | null) => api.post('/tasks', taskData, { headers: { Authorization: `Bearer ${token}` } });
-export const updateTask = (id : string, taskData: Task, token : string | null) => {
-  return api.put(`/tasks/${id}`, taskData, { headers: { Authorization: `Bearer ${token}` } })
+export const createTask = (taskData : Task, token : string ) => {
+  apiService.setAuthHeaders(token);
+  return apiService.post('/tasks', taskData);
+}
+
+export const updateTask = (id : string, taskData: Task, token : string ) => {
+  apiService.setAuthHeaders(token);
+  return apiService.put(`/tasks/${id}`, taskData);
 };
-export const deleteTask = (id : string, token : string | null) => api.delete(`/tasks/${id}`, { headers: { Authorization: `Bearer ${token}` } });
+
+
+export const deleteTask = (id : string, token : string | null) => {
+  apiService.setAuthHeaders(token);
+  return apiService.delete(`/tasks/${id}`);
+}
 
 

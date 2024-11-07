@@ -90,4 +90,6 @@ const Login: React.FC = () => {
     </>
   );
 };
+export const acess_token = (state: RootState) => state.auth.token;
 export default Login;
+

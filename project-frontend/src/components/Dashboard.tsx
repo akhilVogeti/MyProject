@@ -15,6 +15,7 @@ import {logout } from '../features/auth/authSlice'
 
 
 const Dashboard: React.FC = () => {
+
   const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
 
@@ -57,7 +58,6 @@ const Dashboard: React.FC = () => {
   };
 
   const handleSaveTask = async (updatedTask : Task) => {
-
     if (updatedTask && token) {
       try {
         if (updatedTask._id) {
@@ -83,8 +83,7 @@ const Dashboard: React.FC = () => {
   const removeTask = async (taskId: string) => {
     if(token){
       try {
-        await dispatch(deleteExistingTask({taskId, token}))
-        
+        await dispatch(deleteExistingTask({taskId, token}))     
       } catch (error) {
         console.error('Error deleting task:', error);
       }

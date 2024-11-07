@@ -6,7 +6,6 @@ export const login = createAsyncThunk('auth/login', async (credentials: Credenti
     try {     
       const response = await loginAPI(credentials);     
       const token = response.data.access_token;
-      //localStorage.setItem('token', token); 
       return  token ; 
     } catch (error: any) {
       console.log(error);

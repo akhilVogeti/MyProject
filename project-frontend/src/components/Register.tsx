@@ -9,16 +9,13 @@ import { useDispatch } from 'react-redux';
 
 const Register: React.FC = () => {
 
+  const navigate = useNavigate();
+  const dispatch = useDispatch<AppDispatch>();
+
   useEffect(() => {
     document.title='Register';
   },[]);
 
- 
-
-  const navigate = useNavigate();
-  const dispatch = useDispatch<AppDispatch>();
-
- 
   const handleFormSubmit = async(event: React.FormEvent<SignInFormElement>) => {
     event.preventDefault();
     const formElements = event.currentTarget.elements;
@@ -26,6 +23,7 @@ const Register: React.FC = () => {
       username: formElements.username.value,
       password: formElements.password.value,
     };
+    
     try{
       dispatch(register(userData));
       navigate('/login');
