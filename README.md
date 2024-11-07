@@ -1,4 +1,4 @@
-# Sample Project - Task Manager
+#  Task Manager
 
 A full stack dockerised application with NestJS+TypeScript & MongoDB in the backend, React+TypeScript with JoyUI in the frontend to help registered users perform CRUD operations on tasks.
 
