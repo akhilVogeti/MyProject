@@ -1,12 +1,17 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { AppDispatch } from '../app/store';
+import { useDispatch} from 'react-redux';
+import {logout } from '../features/auth/authSlice'
+
 
 const Logout: React.FC = () => {
+  const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
 
-  const handleLogout = () => {
-    localStorage.removeItem('token'); // Clear the token
-    navigate('/'); // Redirect to home
+  const handleLogout = () => { 
+    dispatch(logout());
+    navigate('/'); 
   };
 
   return (

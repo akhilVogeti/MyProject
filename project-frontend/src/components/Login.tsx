@@ -1,24 +1,36 @@
 // import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Input, Button, Box, Stack, FormControl, FormLabel, Typography, Link } from '@mui/joy';
-import {login} from '../api';
+import {  SignInFormElement } from '../types';
+//import {login} from '../api/auth';
+import { login } from '../features/auth/authThunk';
 import { muiStyles } from './styles/styles';
+import { useEffect } from 'react';
+import { RootState, AppDispatch } from '../app/store';
+import { useDispatch, useSelector } from 'react-redux';
 
 const Login: React.FC = () => {
 
-  interface FormElements extends HTMLFormControlsCollection {
-    username: HTMLInputElement;
-    password: HTMLInputElement;
-   
-  }
-  
-  interface SignInFormElement extends HTMLFormElement {
-    readonly elements: FormElements;
-  }
-
- 
   const navigate = useNavigate();
-  document.title='Login'
+  const dispatch = useDispatch<AppDispatch>();
+
+  const { token } = useSelector((state: RootState) => state.auth);
+
+
+
+  useEffect(() => {
+      document.title='Login';
+  },[]);
+
+  useEffect(() => {
+    if (token) {
+      //localStorage.setItem('token', token); 
+      navigate('/dashboard');
+    }
+  }, [token, navigate]);
+ 
+ 
+
 
   const handleLogin = async (event: React.FormEvent<SignInFormElement>) => {
     event.preventDefault();
@@ -28,17 +40,17 @@ const Login: React.FC = () => {
       password: formElements.password.value,
     };
 
-    try {
-      const response = await login( userData);
-      
-      const token = response.data.access_token;
-      
-      localStorage.setItem('token', token); // Store the token
-      localStorage.setItem('username',userData.username);
-      navigate('/dashboard');
-    } catch (error) {
-      console.error('Login error:', error);
-    }
+    // try {
+    //   const response = await login( userData);
+    //   const token = response.data.access_token;
+    //   localStorage.setItem('token', token); // Store the token
+     
+    //   navigate('/dashboard');
+    // } catch (error) {
+    //   console.error('Login error:', error);
+    // }
+
+    dispatch(login(userData));
   };
 
   return (
@@ -78,4 +90,6 @@ const Login: React.FC = () => {
     </>
   );
 };
+export const acess_token = (state: RootState) => state.auth.token;
 export default Login;
+

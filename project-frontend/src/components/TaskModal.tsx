@@ -1,6 +1,6 @@
 import React , {useEffect, useState }from 'react';
 import { Modal, Input, Button, Typography } from '@mui/joy';
-import { Task } from '../api';
+import { Task } from '../service/task.service';
 import { cssStyles, muiStyles } from './styles/styles';
 
 interface TaskModalProps {
